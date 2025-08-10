@@ -1,0 +1,176 @@
+# 🚀 Cloudflare Wrangler Configuration for Solo-Spark
+# Deploy to brainsait.io with full Cloudflare ecosystem
+
+name = "solo-spark"
+main = "src/index.ts"
+compatibility_date = "2024-08-01"
+
+# Custom domain configuration
+routes = [
+  { pattern = "brainsait.io/*", custom_domain = true },
+  { pattern = "www.brainsait.io/*", custom_domain = true },
+  { pattern = "api.brainsait.io/*", custom_domain = true }
+]
+
+# Environment configuration
+[env.staging]
+name = "solo-spark-staging"
+routes = [
+  { pattern = "staging.brainsait.io/*", custom_domain = true }
+]
+
+[env.production]
+name = "solo-spark-production"
+routes = [
+  { pattern = "brainsait.io/*", custom_domain = true },
+  { pattern = "www.brainsait.io/*", custom_domain = true }
+]
+
+# ===== KV NAMESPACES =====
+# User data, sessions, and cache storage
+[[kv_namespaces]]
+binding = "USER_DATA"
+id = "your_user_data_kv_namespace_id"
+preview_id = "your_user_data_kv_preview_id"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "your_sessions_kv_namespace_id"
+preview_id = "your_sessions_kv_preview_id"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your_cache_kv_namespace_id"
+preview_id = "your_cache_kv_preview_id"
+
+[[kv_namespaces]]
+binding = "ANALYTICS"
+id = "your_analytics_kv_namespace_id"
+preview_id = "your_analytics_kv_preview_id"
+
+# ===== R2 BUCKETS =====
+# File storage for PDFs, prototypes, and user uploads
+[[r2_buckets]]
+binding = "USER_FILES"
+bucket_name = "solo-spark-user-files"
+preview_bucket_name = "solo-spark-user-files-preview"
+
+[[r2_buckets]]
+binding = "PROTOTYPES"
+bucket_name = "solo-spark-prototypes"
+preview_bucket_name = "solo-spark-prototypes-preview"
+
+[[r2_buckets]]
+binding = "EXPORTS"
+bucket_name = "solo-spark-exports"
+preview_bucket_name = "solo-spark-exports-preview"
+
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "solo-spark-backups"
+preview_bucket_name = "solo-spark-backups-preview"
+
+# ===== DURABLE OBJECTS =====
+# Real-time collaboration and state management
+[[durable_objects.bindings]]
+name = "COLLABORATION"
+class_name = "CollaborationDurableObject"
+script_name = "solo-spark"
+
+[[durable_objects.bindings]]
+name = "USER_SESSIONS"
+class_name = "UserSessionDurableObject"
+script_name = "solo-spark"
+
+# ===== D1 DATABASE =====
+# SQL database for structured data
+[[d1_databases]]
+binding = "DB"
+database_name = "solo-spark-db"
+database_id = "your_d1_database_id"
+
+# ===== ANALYTICS ENGINE =====
+# Custom analytics and metrics
+[[analytics_engine_datasets]]
+binding = "ANALYTICS_ENGINE"
+dataset = "solo_spark_analytics"
+
+# ===== AI BINDINGS =====
+# Cloudflare AI for additional AI capabilities
+[ai]
+binding = "AI"
+
+# ===== QUEUES =====
+# Background job processing
+[[queues.consumers]]
+queue = "ai-processing-queue"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[queues.consumers]]
+queue = "email-queue"
+max_batch_size = 100
+max_batch_timeout = 60
+
+[[queues.consumers]]
+queue = "analytics-queue"
+max_batch_size = 50
+max_batch_timeout = 30
+
+# ===== BINDINGS =====
+[[queues.producers]]
+binding = "AI_QUEUE"
+queue = "ai-processing-queue"
+
+[[queues.producers]]
+binding = "EMAIL_QUEUE"
+queue = "email-queue"
+
+[[queues.producers]]
+binding = "ANALYTICS_QUEUE"
+queue = "analytics-queue"
+
+# ===== VARIABLES =====
+# Environment-specific configuration
+[vars]
+ENVIRONMENT = "production"
+DOMAIN = "brainsait.io"
+API_BASE_URL = "https://api.brainsait.io"
+CDN_URL = "https://cdn.brainsait.io"
+SUPPORT_EMAIL = "support@brainsait.io"
+
+# Feature flags
+ENABLE_PAYMENTS = "true"
+ENABLE_GITHUB_INTEGRATION = "true"
+ENABLE_ARABIC = "true"
+ENABLE_ANALYTICS = "true"
+ENABLE_AI_ENHANCEMENTS = "true"
+
+# Saudi market configuration
+DEFAULT_CURRENCY = "SAR"
+DEFAULT_LOCALE = "ar-SA"
+PAYMENT_METHODS = "stripe,stc_pay,mada"
+
+# ===== STAGING ENVIRONMENT OVERRIDES =====
+[env.staging.vars]
+ENVIRONMENT = "staging"
+DOMAIN = "staging.brainsait.io"
+API_BASE_URL = "https://api-staging.brainsait.io"
+ENABLE_ANALYTICS = "false"
+
+# ===== COMPATIBILITY FLAGS =====
+compatibility_flags = ["nodejs_compat"]
+
+# ===== BUILD CONFIGURATION =====
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"
+
+# ===== MINIFLARE CONFIGURATION =====
+# Local development settings
+[miniflare]
+kv_persist = true
+cache_persist = true
+d1_persist = true
+r2_persist = true
