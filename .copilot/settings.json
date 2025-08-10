@@ -1,0 +1,10 @@
+{
+  "preferredLanguages": ["swift", "python", "bash", "typescript"],
+  "frameworks": ["fastapi", "docker", "cloudflare", "react"],
+  "codingStyle": {
+    "naming": "camelCase",
+    "indentation": 2,
+    "comments": "always explain functions and decisions",
+    "structure": "MVC or modular"
+  }
+}

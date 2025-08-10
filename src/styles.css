@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ensure mobile-first typography balances well */
+.prose {
+  @apply prose-sm sm:prose-base;
+}
+
+/* Extra small helpers for RTL spacing fixes if needed */
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
